@@ -1,77 +1,34 @@
-angular.module('orderApp')
+angular.module('WeatherApp')
     .controller('DashboardCtrl', DashboardCtrl);
 
-DashboardCtrl.$inject = ['$scope', 'Order'];
+DashboardCtrl.$inject = ['$scope', 'Weather'];
 
-function DashboardCtrl($scope, Order) {
+function DashboardCtrl($scope, Weather) {
     var vm = this;
-
-    var paginationOptions = {
-        pageNumber: 1,
-        pageSize: 5,
-        sort: null
-    };
-
-    vm.gridOptions = {
-        enableRowSelection: true,
-        enableFullRowSelection: true,
-        multiSelect: false,      
-        paginationPageSizes: [5, 10, 20],
-        paginationPageSize: 5,
-        useExternalPagination: true,
-        useExternalSorting: true,
-        noUnselect : true,
-        onRegisterApi : function(gridApi){
-            gridApi.selection.on.rowSelectionChanged($scope, function (row) {                
-                vm.getOrderItems(row.entity);
-            });
-
-            gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
-                paginationOptions.pageNumber = newPage;
-                paginationOptions.pageSize = pageSize;
-                getPage();
-            });
-
-            vm.gridApi = gridApi;
-        },
-        columnDefs : [
-           { name: 'OrderId', field: 'Id' },
-           { name: 'ClientId' },
-           { name: 'ClientName' },
-           { name: 'OrderDate' },
-           { name: 'GST' },
-           { name: 'Total' }
-        ]
-    };
-
-    vm.gridOptionsOrderItems = {
-        columnDefs : [
-           { name: 'Id' },
-           { name: 'ProductCode' },
-           { name: 'Quantity' },
-           { name: 'TotalPrice' }
-        ],
-        onRegisterApi: function (gridApi) {
-            vm.gridApiOrderItems = gridApi;
-        }
-    };
-
-    vm.getOrders = function () {
-        Order.getOrders().then(function (data) {           
-            vm.gridOptions.totalItems = data.length;
-
-            var firstRow = (paginationOptions.pageNumber - 1) * paginationOptions.pageSize;
-            vm.gridOptions.data = data.slice(firstRow, firstRow + paginationOptions.pageSize);           
+    vm.country = "Australia";
+   
+    vm.getForecast = function () {
+        Weather.getForecast(vm.city, vm.country).then(function (data) {
+            vm.forecast = data;
         });
     };
 
-    vm.getOrderItems = function (selectedOrder) {
-        Order.getOrderItems(selectedOrder.Id).then(function (data) {
-            vm.orderItems = data;
-            vm.gridOptionsOrderItems.data = data;         
-        });
-    }
+    //vm.getWeatherItems = function (selectedWeather) {
+    //    Weather.getWeatherItems(selectedWeather.Id).then(function (data) {
+    //        vm.WeatherItems = data;
+    //        vm.gridOptionsWeatherItems.data = data;         
+    //    });
+    //}
 
-    vm.getOrders();
+    vm.getLocations = function () {
+        return Weather.getCities(vm.country).then(function (data) {
+            vm.locations = data;
+        });
+    };
+
+    vm.parseDate = function (time) {
+        return new Date(time * 1000);
+    };
+    
     return vm;
 };

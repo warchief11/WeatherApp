@@ -1,6 +1,6 @@
 ﻿(function () {
 
-    var app = angular.module('orderApp', ['ui.router', 'ui.grid', 'ui.grid.selection', 'ui.grid.pagination']);
+    var app = angular.module('WeatherApp', ['ui.router', 'ui.grid', 'ui.grid.selection', 'ui.grid.pagination']);
 
     app.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/');

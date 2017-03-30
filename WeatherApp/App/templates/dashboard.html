@@ -1,8 +1,66 @@
-﻿<div>
-    <h3>OrderView Dashboard</h3>
-    <p>Displaying Orders -- Select any row to get Order Items for that Order</p>
-    <div ui-grid="vm.gridOptions" ui-grid-selection  ui-grid-pagination class="mygrid"></div>
-    <hr />
-    <h4>Displaying Order Items:</h4>
-    <div ui-grid="vm.gridOptionsOrderItems" ui-grid-selection class="mygrid"></div>
+﻿<div class="weather-search">
+    <div class="row">
+        <div class="col-xs-12">
+            <div>
+                <form class="form-inline" role="form">
+                    <hr />
+                    <span class="form-group {{hasState}}">
+                        <label class="sr-only" for="location">City</label>
+                        <input ng-model="vm.country" type="text" class="form-control" id="location" placeholder="Country">
+                    </span>
+                    <button ng-click="vm.getLocations()" type="submit" class="btn btn-primary">Get Cities!</button>
+                    <select ng-model="vm.city" class="form-control" ng-change="vm.getForecast()">
+                        <option ng-repeat="x in vm.locations" value="{{x.City}}">{{x.City}}</option>
+                    </select>
+                    <span ng-show="vm.message" class="alert"><span class="glyphicon glyphicon-arrow-left">&nbsp;</span>{{vm.message}}</span>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="weather-data" ng-show="vm.forecast">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="">
+                <h3>
+                    {{vm.forecast.Location.City}}, {{vm.forecast.Location.Country}}
+                    <small>Lon: {{vm.forecast.Location.Longitude | number:2}} Lat: {{vm.forecast.Location.Latitude | number:2}}</small>
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="weather panel panel-primary">
+                <div class="panel-heading">{{vm.parseDate(vm.forecast.DateTimeUTC) | date:'fullDate'}}</div>
+                <div class="panel-body">
+                    <div>
+                        <p class="lead">
+                            <img ng-src="{{vm.forecast.Icon}}" />
+                            {{vm.forecast.Temperature | number:1}}&#176;C
+                        </p>
+                        <p>
+                            Visibility: {{vm.forecast.Visibility}} km
+                        </p>
+                        <p>
+                            Wind: {{vm.forecast.WindSpeed}} m/s
+                        </p>
+                        <p>
+                            Sky Conditions: {{vm.forecast.SkyConditions}}
+                        </p>
+                        <p>
+                            High: {{vm.forecast.MaxTemp}}&#176;C&nbsp;&#126;&nbsp;
+                            Low: {{vm.forecast.MinTemp}}&#176;C
+                        </p>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <small>
+                        Pressure: {{vm.forecast.Pressure}} hPa&nbsp;&#126;&nbsp;
+                        Humidity: {{vm.forecast.RelativeHumdity}}%
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
