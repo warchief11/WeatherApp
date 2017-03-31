@@ -1,4 +1,5 @@
-﻿using System.Web.Http;
+﻿using System.Threading.Tasks;
+using System.Web.Http;
 using WeatherApp.Models.openWeatherMapAPI;
 
 namespace WeatherAppAPI.Controllers
@@ -18,9 +19,9 @@ namespace WeatherAppAPI.Controllers
             _weatherService = weatherService;
         }
 
-        public IHttpActionResult Get(string city, string country)
+        public async Task<IHttpActionResult> Get(string city, string country)
         {
-            var weatherDetails = _weatherService.GetForecast(city, country);
+            var weatherDetails = await _weatherService.GetForecastAsync(city, country);
             if(weatherDetails == null)
             {
                 return NotFound();

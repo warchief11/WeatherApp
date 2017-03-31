@@ -4,22 +4,36 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace WeatherApp.Models.openWeatherMapAPI
 {
     public class WeatherService : IWeatherService
     {
-        public Forecast GetForecast(string city, string country)
+        private const string OpenWeatherBaseURL = "http://api.openweathermap.org/data/2.5/weather";
+        private HttpClient _httpClient;
+
+        public WeatherService()
         {
-            var client = GetOpenWeatherMapClient();
+            _httpClient = new HttpClient();
+            _httpClient.BaseAddress = new Uri(OpenWeatherBaseURL);
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _httpClient.DefaultRequestHeaders.Add("x-api-key", "090ac9d4a0b5d54c2083de2e46b65058");
+        }
+
+        public WeatherService(HttpClient httpClient)
+        {
+            _httpClient = httpClient;
+        }
+
+        public async Task<Forecast> GetForecastAsync(string city, string country)
+        {
             // List data response.
-            HttpResponseMessage response = client.GetAsync(string.Format("?q={0},{1}&units=metric", city, country)).Result;  // Blocking call!
+            var response = await _httpClient.GetAsync(string.Format("?q={0},{1}&units=metric", city, country));  // Blocking call!
             if (response.IsSuccessStatusCode)
             {
-
                 // Parse the response body. Blocking!
-                //var weatherDetail = response.Content.ReadAsStringAsync().Result;
-                string detail = response.Content.ReadAsStringAsync().Result;
+                string detail = await response.Content.ReadAsStringAsync();
                 var weatherDetail = JsonConvert.DeserializeObject<WeatherDetails>(detail);
                 return MapWeatherDetail(city, country, weatherDetail);
             }
@@ -53,21 +67,6 @@ namespace WeatherApp.Models.openWeatherMapAPI
             }
             return forecast;
         }
-
-        private HttpClient GetOpenWeatherMapClient()
-        {
-           string URL = "http://api.openweathermap.org/data/2.5/weather";
-
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(URL);
-
-            // Add an Accept header for JSON format.
-            client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Add("x-api-key", "090ac9d4a0b5d54c2083de2e46b65058");
-
-            return client;
         
-        }
     }
 }

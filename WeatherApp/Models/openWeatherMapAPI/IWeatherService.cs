@@ -1,7 +1,9 @@
-﻿namespace WeatherApp.Models.openWeatherMapAPI
+﻿using System.Threading.Tasks;
+
+namespace WeatherApp.Models.openWeatherMapAPI
 {
     public interface IWeatherService
     {
-        Forecast GetForecast(string city, string country);
+        Task<Forecast> GetForecastAsync(string city, string country);
     }
 }

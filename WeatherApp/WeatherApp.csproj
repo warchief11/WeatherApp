@@ -166,7 +166,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\GlobalWeatherAPI\Location.cs" />
+    <Compile Include="Models\GlobalWeatherAPI\CityDetail.cs" />
     <Compile Include="Models\GlobalWeatherAPI\LocationService.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\openWeatherMapAPI\IWeatherService.cs" />
